@@ -59,7 +59,7 @@ type SlackTextObject = {
   emoji?: boolean
 }
 
-export type SlackCardBlock = {
+type SlackCardBlock = {
   type: "card" | "context"
   icon?: {
     type: "image"
