@@ -1,0 +1,27 @@
+catalog:
+  "@hono/node-server": ^1.19.2
+  "@hono/zod-validator": ^0.9.1
+  "@types/node": ^26.5.1
+  "@types/sanitize-html": ^2.16.1
+  hono: ^4.9.7
+  knip: ^6.34.0
+  mongodb: ^6.20.0
+  oxfmt: ^0.66.0
+  oxlint: 1.81.0
+  oxlint-tsgolint: 7.0.2001
+  sanitize-html: ^2.17.7
+  tsx: ^4.20.5
+  typescript: 7.0.2
+  zod: ^4.5.4
+
+catalogMode: strict
+
+catalogPrune: true
+
+ignoreScripts: true
+
+minimumReleaseAge: 10080
+
+trustLockfile: true
+
+trustPolicy: no-downgrade

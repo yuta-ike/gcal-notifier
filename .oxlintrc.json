@@ -1,0 +1,8 @@
+{
+  "options": {
+    "typeAware": false
+  },
+  "rules": {
+    "curly": "error"
+  }
+}
