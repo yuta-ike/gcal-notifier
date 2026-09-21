@@ -62,6 +62,10 @@ const closeDialog = (dialog) => {
 
 document.addEventListener("click", (event) => {
   const target = event.target.closest("[data-dialog-target], [data-dialog-close]")
+  if (target == null) {
+    return
+  }
+
   if (target.matches("[data-dialog-target]")) {
     event.preventDefault()
     openDialog(document.getElementById(target.dataset.dialogTarget), target)
