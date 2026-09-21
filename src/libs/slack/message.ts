@@ -1,6 +1,5 @@
-import { config } from "../../config.js"
 import type { GoogleCalendarEvent } from "../../domain/model/calendar-event.js"
-import type { SlackApiClientConfig, SlackCardBlock } from "./api.js"
+import type { SlackApiClientConfig, SlackBlock } from "./api.js"
 import { postSlackMessage } from "./api.js"
 import type { SlackNotificationTarget } from "../../domain/model/slack-notification-target.js"
 import { textFromDescriptionHtml } from "../../domain/model/notification-directive.js"
@@ -16,7 +15,7 @@ type MeetingLink = {
   url: string
 }
 
-const truncate = (value: string, maxLength: number): string =>
+const truncate = (value: string, maxLength: number) =>
   value.length <= maxLength ? value : `${value.slice(0, maxLength - 1)}…`
 
 const extractMeetingLinks = (event: GoogleCalendarEvent): MeetingLink[] => {
@@ -62,33 +61,10 @@ const extractMeetingLinks = (event: GoogleCalendarEvent): MeetingLink[] => {
   return [...links.values()]
 }
 
-const buildReminderMessage = (
-  event: GoogleCalendarEvent,
-  target: SlackNotificationTarget,
-): string => {
-  const title = `*${event.summary}*`
-  const time = formatEventTime(event)
-  const description = textFromDescriptionHtml(event.description).trim()
-  const location = event.location?.trim() ?? ""
-  const meetingLinks = extractMeetingLinks(event)
-  const link = event.htmlLink
-  return [
-    target.mentionText,
-    title,
-    time,
-    location,
-    description,
-    ...meetingLinks.map(({ url }) => url),
-    link,
-  ]
-    .filter(Boolean)
-    .join("\n")
-}
-
 const buildReminderCard = (
   event: GoogleCalendarEvent,
   target: SlackNotificationTarget,
-): SlackCardBlock[] => {
+): SlackBlock[] => {
   const description = textFromDescriptionHtml(event.description).trim()
   const location = event.location?.trim() ?? ""
   const availableMeetingLinks = extractMeetingLinks(event)
@@ -120,9 +96,20 @@ const buildReminderCard = (
     })),
   ].filter((action) => action != null)
   const body = description === "" ? "（詳細なし）" : description
-  const subtext = [target.mentionText, location].filter(Boolean).join("\n")
 
   return [
+    ...(target.mentionText === ""
+      ? []
+      : [
+          {
+            type: "section" as const,
+            text: {
+              type: "mrkdwn" as const,
+              text: target.mentionText,
+              verbatim: false,
+            },
+          },
+        ]),
     {
       type: "card" as const,
       icon: {
@@ -149,11 +136,11 @@ const buildReminderCard = (
               verbatim: false,
             },
       subtext:
-        subtext.length === 0
+        location.length === 0
           ? undefined
           : {
               type: "mrkdwn" as const,
-              text: truncate(subtext, CARD_BODY_MAX_LENGTH),
+              text: truncate(location, CARD_BODY_MAX_LENGTH),
               verbatim: false,
             },
       actions: actions.length === 0 ? undefined : actions,
@@ -165,11 +152,11 @@ export const sendReminderMessage = async (
   client: SlackApiClientConfig,
   event: GoogleCalendarEvent,
   target: SlackNotificationTarget,
-): Promise<void> => {
+) => {
   await postSlackMessage(client, {
     channel: target.channelId,
-    text: buildReminderMessage(event, target),
     blocks: [...buildReminderCard(event, target)],
     mrkdwn: true,
+    username: "カレンダー通知",
   })
 }

@@ -29,13 +29,14 @@ test("includes calendar event details in a Slack reminder", async () => {
 
   await sendReminderMessage({ accessToken: "token", fetch: fetcher }, event, target)
 
-  assert.equal(
-    requestBody?.text,
-    "<!channel>\n*リリース会議*\n2026/09/20 10:00 - 2026/09/20 11:00\n会議室A\n本番リリースの確認\nhttps://calendar.google.com/event-1",
-  )
   assert.equal(requestBody?.channel, "C123")
   assert.equal(requestBody?.mrkdwn, true)
+  assert.equal(requestBody?.username, "カレンダー通知")
   assert.deepEqual(requestBody?.blocks, [
+    {
+      type: "section",
+      text: { type: "mrkdwn", text: "<!channel>", verbatim: false },
+    },
     {
       type: "card",
       icon: {
@@ -56,7 +57,7 @@ test("includes calendar event details in a Slack reminder", async () => {
       },
       subtext: {
         type: "mrkdwn",
-        text: "<!channel>\n会議室A",
+        text: "会議室A",
         verbatim: false,
       },
       actions: [
@@ -99,6 +100,10 @@ test("adds Zoom links from text and Google Meet links from conference data", asy
   )
 
   assert.deepEqual((requestBody?.blocks as Array<Record<string, unknown>> | undefined)?.[0], {
+    type: "section",
+    text: { type: "mrkdwn", text: "<!channel>", verbatim: false },
+  })
+  assert.deepEqual((requestBody?.blocks as Array<Record<string, unknown>> | undefined)?.[1], {
     type: "card",
     icon: {
       type: "image",
@@ -116,7 +121,6 @@ test("adds Zoom links from text and Google Meet links from conference data", asy
       text: "Zoom: https://us02web.zoom.us/j/123456789?pwd=secret",
       verbatim: false,
     },
-    subtext: { type: "mrkdwn", text: "<!channel>", verbatim: false },
     actions: [
       {
         type: "button",

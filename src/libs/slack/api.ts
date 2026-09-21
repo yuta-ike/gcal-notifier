@@ -59,7 +59,7 @@ type SlackTextObject = {
   emoji?: boolean
 }
 
-export type SlackCardBlock = {
+type SlackCardBlock = {
   type: "card" | "context"
   icon?: {
     type: "image"
@@ -78,6 +78,13 @@ export type SlackCardBlock = {
     style?: "primary"
   }>
 }
+
+type SlackSectionBlock = {
+  type: "section"
+  text: SlackTextObject
+}
+
+export type SlackBlock = SlackCardBlock | SlackSectionBlock
 
 const slackResponse = <T extends { ok?: boolean }>(
   operation: string,
@@ -223,9 +230,10 @@ export const listSlackUsergroups = (client: SlackApiClientConfig) =>
 
 type SlackPostMessageInput = {
   channel: string
-  blocks?: SlackCardBlock[]
+  blocks?: SlackBlock[]
   text?: string
   mrkdwn?: boolean
+  username?: string
 }
 
 export const postSlackMessage = async (
@@ -241,6 +249,9 @@ export const postSlackMessage = async (
   }
   if (input.mrkdwn !== undefined) {
     body.mrkdwn = input.mrkdwn
+  }
+  if (input.username !== undefined) {
+    body.username = input.username
   }
 
   const url = new URL("chat.postMessage", withTrailingSlash(SLACK_API_BASE_URL))
