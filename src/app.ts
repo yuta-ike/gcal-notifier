@@ -2,6 +2,7 @@ import { serveStatic } from "@hono/node-server/serve-static"
 import { Hono } from "hono"
 import { authMiddleware } from "./middleware/auth.js"
 import { logger } from "hono/logger"
+import { secureHeaders } from "hono/secure-headers"
 import { healthApp } from "./routes/health.js"
 import { webApp } from "./routes/web.js"
 import { authApp } from "./routes/auth.js"
@@ -9,6 +10,8 @@ import { cronApp } from "./routes/cron.js"
 import { apiApp } from "./routes/api.js"
 
 export const app = new Hono()
+  // Security headers
+  .use(secureHeaders())
   // Logger
   .use(logger())
   // Asset

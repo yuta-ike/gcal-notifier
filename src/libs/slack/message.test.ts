@@ -40,7 +40,7 @@ test("includes calendar event details in a Slack reminder", async () => {
       type: "card",
       icon: {
         type: "image",
-        image_url: "http://localhost:3000/assets/gcal-notifier-icon.png",
+        image_url: "http://yuta-ike.github.io/yuta-ike/gcal-notifier/gcal-notifier-icon.png",
         alt_text: "GCal Notifier",
       },
       title: { type: "mrkdwn", text: "リリース会議", verbatim: false },
@@ -102,7 +102,7 @@ test("adds Zoom links from text and Google Meet links from conference data", asy
     type: "card",
     icon: {
       type: "image",
-      image_url: "http://localhost:3000/assets/gcal-notifier-icon.png",
+      image_url: "http://yuta-ike.github.io/yuta-ike/gcal-notifier/gcal-notifier-icon.png",
       alt_text: "GCal Notifier",
     },
     title: { type: "mrkdwn", text: "オンライン会議", verbatim: false },
