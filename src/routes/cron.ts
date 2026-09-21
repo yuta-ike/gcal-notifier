@@ -7,7 +7,6 @@ import { NotificationSlotSchema } from "../domain/model/notification-slot.js"
 import { JAPAN_TIME_ZONE, localDate } from "../libs/time.js"
 import { Hono } from "hono"
 import { db } from "../db.js"
-import { matchesBearerToken } from "../libs/validation.js"
 import { tryCatchAsync } from "../libs/result.js"
 
 const cronSchema = z.object({
@@ -26,9 +25,8 @@ export const cronApp = new Hono().post(
   "/reminders",
   zValidator("query", cronSchema, validationError),
   async (c) => {
-    const authorization = c.req.header("authorization")
-    const valid = matchesBearerToken(authorization, config.cronSecret)
-    if (!valid) {
+    const secret = c.req.header("X-Cron-Secret")
+    if (secret !== config.cronSecret) {
       return c.json({ error: "cron認証に失敗しました" }, 401)
     }
 
