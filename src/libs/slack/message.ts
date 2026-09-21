@@ -127,7 +127,7 @@ const buildReminderCard = (
       type: "card" as const,
       icon: {
         type: "image" as const,
-        image_url: new URL("/assets/gcal-notifier-icon.png", config.baseUrl).toString(),
+        image_url: "http://yuta-ike.github.io/yuta-ike/gcal-notifier/gcal-notifier-icon.png",
         alt_text: "GCal Notifier",
       },
       title: {
