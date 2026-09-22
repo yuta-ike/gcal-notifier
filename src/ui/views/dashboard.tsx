@@ -30,7 +30,7 @@ export const DashboardPage = ({ userId, googleConnected }: Props) => (
       <ul>
         <li>チャンネルはSlackのチャンネル名です。メンション部分は省略できます。</li>
         <li>
-          メンションはSlackユーザー名、表示名、ユーザーグループ名または `@here` / `@channel` です。
+          メンションはSlackユーザー名、表示名、ユーザーグループ名または @here / @channel です。
         </li>
       </ul>
       <a className="button" href="/calendar">
