@@ -63,6 +63,22 @@ const clockFormatter = (timeZone: string) =>
     minute: "2-digit",
   })
 
+const startClockFormatter = (timeZone: string) =>
+  new Intl.DateTimeFormat("en-GB", {
+    timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  })
+
+export const formatEventStartTime = (event: CalendarEvent, timeZone: string): string => {
+  if (event.start.date != null) {
+    return ""
+  }
+  const start = parseDateTime(event.start.dateTime)
+  return start == null ? "" : startClockFormatter(timeZone).format(start)
+}
+
 export const formatEventClock = (event: CalendarEvent, timeZone: string): string => {
   if (event.start.date != null) {
     return "終日"

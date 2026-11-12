@@ -3,7 +3,7 @@ import type { SlackApiClientConfig, SlackBlock } from "./api.js"
 import { postSlackMessage } from "./api.js"
 import type { SlackNotificationTarget } from "../../domain/model/slack-notification-target.js"
 import { textFromDescriptionHtml } from "../../domain/model/notification-directive.js"
-import { formatEventTime } from "../time.js"
+import { formatEventStartTime, formatEventTime, JAPAN_TIME_ZONE } from "../time.js"
 import { tryCatch } from "../result.js"
 
 const CARD_BODY_MAX_LENGTH = 200
@@ -111,12 +111,15 @@ const buildReminderCard = (
           },
         ]),
     {
-      type: "card" as const,
-      icon: {
-        type: "image" as const,
-        image_url: "http://yuta-ike.github.io/yuta-ike/gcal-notifier/gcal-notifier-icon.png",
-        alt_text: "GCal Notifier",
+      type: "section" as const,
+      text: {
+        type: "mrkdwn" as const,
+        text: `${formatEventStartTime(event, JAPAN_TIME_ZONE)} からミーティングがあります`,
+        verbatim: false,
       },
+    },
+    {
+      type: "card" as const,
       title: {
         type: "mrkdwn" as const,
         text: truncate(event.summary, 150),

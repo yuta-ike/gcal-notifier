@@ -38,12 +38,11 @@ test("includes calendar event details in a Slack reminder", async () => {
       text: { type: "mrkdwn", text: "<!channel>", verbatim: false },
     },
     {
+      type: "section",
+      text: { type: "mrkdwn", text: "10:00 からミーティングがあります", verbatim: false },
+    },
+    {
       type: "card",
-      icon: {
-        type: "image",
-        image_url: "http://yuta-ike.github.io/yuta-ike/gcal-notifier/gcal-notifier-icon.png",
-        alt_text: "GCal Notifier",
-      },
       title: { type: "mrkdwn", text: "リリース会議", verbatim: false },
       subtitle: {
         type: "mrkdwn",
@@ -104,12 +103,11 @@ test("adds Zoom links from text and Google Meet links from conference data", asy
     text: { type: "mrkdwn", text: "<!channel>", verbatim: false },
   })
   assert.deepEqual((requestBody?.blocks as Array<Record<string, unknown>> | undefined)?.[1], {
+    type: "section",
+    text: { type: "mrkdwn", text: "10:00 からミーティングがあります", verbatim: false },
+  })
+  assert.deepEqual((requestBody?.blocks as Array<Record<string, unknown>> | undefined)?.[2], {
     type: "card",
-    icon: {
-      type: "image",
-      image_url: "http://yuta-ike.github.io/yuta-ike/gcal-notifier/gcal-notifier-icon.png",
-      alt_text: "GCal Notifier",
-    },
     title: { type: "mrkdwn", text: "オンライン会議", verbatim: false },
     subtitle: {
       type: "mrkdwn",
