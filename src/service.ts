@@ -23,7 +23,7 @@ export async function notifyToday(
     await postMessage(
       slack,
       channelId,
-      formatEvent(event, notification.mentions),
+      formatEvent(event, notification.mentions, config.TIME_ZONE),
     )
     sent += 1
   }

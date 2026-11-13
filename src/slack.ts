@@ -1,5 +1,5 @@
 import type { WebClient } from "@slack/web-api"
-import { format, parseISO } from "date-fns"
+import { formatInTimeZone } from "date-fns-tz"
 
 export async function findChannelId(client: WebClient, name: string) {
   let cursor: string | undefined
@@ -40,10 +40,13 @@ export function formatEvent(
     htmlLink?: string | null
   },
   mentions: string[],
+  timeZone: string,
 ) {
   const title = event.summary?.trim() || "(無題の予定)"
   const start = event.start?.dateTime ?? event.start?.date
-  const date = start ? format(parseISO(start), "yyyy/M/d HH:mm") : "日時未定"
+  const date = start
+    ? formatInTimeZone(start, timeZone, "yyyy/M/d HH:mm")
+    : "日時未定"
   const prefix = mentions.length > 0 ? `${mentions.join(" ")}\n` : ""
   return `${prefix}${title} は ${date} 開始です。`
 }

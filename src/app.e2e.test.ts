@@ -56,8 +56,9 @@ test("POST /notify sends matching calendar events to Slack", async () => {
       summary: "Sprint planning",
       description: "notify#engineering{@alice,@Bob}",
       attendees: [{ email: "TEAM@example.com" }],
-      start: { dateTime: "2026-11-12T10:00:00+09:00" },
-      end: { dateTime: "2026-11-12T11:00:00+09:00" },
+      // The UTC instant is 2026-11-12 01:00Z; Slack must display JST.
+      start: { dateTime: "2026-11-12T01:00:00Z" },
+      end: { dateTime: "2026-11-12T02:00:00Z" },
       htmlLink: "https://calendar.google.com/event/matching",
     },
     {
