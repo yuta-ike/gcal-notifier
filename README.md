@@ -2,7 +2,7 @@
 
 Google カレンダーの予定をSlackに通知するためのツール。
 
-アクセストークンを利用してGoogleカレンダーの予定を取得し、特定のグループメールアドレスがあればその予定をSlackに通知する。
+アクセストークンを利用してGoogleカレンダーの予定を取得し、通知記法がある予定をSlackに通知する。
 
 毎日朝10時に起動される。
 
@@ -32,14 +32,17 @@ GitHub Releaseを公開すると、GitHub ActionsがDockerイメージをGitHub 
 
 - `GOOGLE_ACCESS_TOKEN`: Google Calendar APIのアクセストークン
 - `GOOGLE_CALENDAR_ID`: 取得対象のカレンダーID（既定値は`primary`）
-- `GOOGLE_GROUP_EMAIL`: 通知対象とする予定参加者のグループメールアドレス
 - `SLACK_BOT_TOKEN`: Slack Bot Token（`channels:read`、`groups:read`、`chat:write`が必要）
 - `PORT`: HTTPポート（既定値は`8080`）
 - `TIME_ZONE`: 「今日」の判定に使うIANAタイムゾーン（既定値は`Asia/Tokyo`）
 
-Cloud Schedulerなどから毎日10時に、空のJSONオブジェクト（`{}`）を本文として`POST /notify`を呼び出す。`GET /health`はヘルスチェック用である。
+Cloud Schedulerなどから毎日10時に、空のJSONオブジェクト（`{}`）を本文として`POST /notify`を呼び出す。特定の日付を指定する場合は、`date`に`YYYY-MM-DD`形式の日付を指定する。`GET /health`はヘルスチェック用である。
 
-`/notify`は対象日の予定を取得し、参加者に`GOOGLE_GROUP_EMAIL`が含まれ、説明に通知記法がある予定だけを処理する。通知先チャンネルはSlack APIで名前からIDへ解決し、`@mention`は説明に書かれた平文のまま送信する。
+```json
+{"date":"2026-11-12"}
+```
+
+`/notify`は対象日の予定を取得し、説明に通知記法がある予定だけを処理する。参加者に特定のグループアドレスが含まれているかどうかは問いません。通知先チャンネルはSlack APIで名前からIDへ解決し、`@mention`は説明に書かれた平文のまま送信する。
 
 ## 品質保証
 

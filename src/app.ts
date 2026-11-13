@@ -5,10 +5,14 @@ import { secureHeaders } from "hono/secure-headers"
 import { z } from "zod"
 import { CalendarClient } from "./calendar.js"
 import { Config } from "./config.js"
-import { notifyToday } from "./service.js"
+import { notifyOnDate, notifyToday } from "./service.js"
 import type { WebClient } from "@slack/web-api"
 
-const notifyRequestSchema = z.object({}).passthrough()
+const notifyRequestSchema = z
+  .object({
+    date: z.string().date().optional(),
+  })
+  .passthrough()
 
 export function createApp(
   config: Config,
@@ -26,7 +30,10 @@ export function createApp(
     zValidator("json", notifyRequestSchema),
     async (context) => {
       try {
-        const sent = await notifyToday(config, calendar, slack)
+        const input = context.req.valid("json")
+        const sent = input.date
+          ? await notifyOnDate(config, calendar, slack, input.date)
+          : await notifyToday(config, calendar, slack)
         return context.json({ ok: true, sent })
       } catch (error) {
         console.error("Notification failed", error)

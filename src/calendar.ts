@@ -1,5 +1,5 @@
 import { auth, calendar, calendar_v3 } from "@googleapis/calendar"
-import { addDays, startOfDay } from "date-fns"
+import { addDays, isValid, parseISO, startOfDay } from "date-fns"
 import { fromZonedTime, toZonedTime } from "date-fns-tz"
 
 export type CalendarEvent = calendar_v3.Schema$Event
@@ -38,15 +38,31 @@ export function todayRange(
   now = new Date(),
 ): { timeMin: string; timeMax: string } {
   const day = startOfDay(toZonedTime(now, timeZone))
+  return rangeFromZonedDay(day, timeZone)
+}
+
+export function dateRange(
+  timeZone: string,
+  date: string,
+): { timeMin: string; timeMax: string } {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    throw new Error("date must be in YYYY-MM-DD format")
+  }
+
+  const parsed = parseISO(date)
+  if (!isValid(parsed)) {
+    throw new Error("date must be a valid calendar date")
+  }
+
+  const day = startOfDay(
+    toZonedTime(fromZonedTime(`${date}T00:00:00`, timeZone), timeZone),
+  )
+  return rangeFromZonedDay(day, timeZone)
+}
+
+function rangeFromZonedDay(day: Date, timeZone: string) {
   return {
     timeMin: fromZonedTime(day, timeZone).toISOString(),
     timeMax: fromZonedTime(addDays(day, 1), timeZone).toISOString(),
   }
-}
-
-export function hasGroupAttendee(event: CalendarEvent, groupEmail: string) {
-  const expected = groupEmail.toLowerCase()
-  return (event.attendees ?? []).some(
-    (attendee) => attendee.email?.toLowerCase() === expected,
-  )
 }
