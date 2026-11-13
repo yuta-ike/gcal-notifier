@@ -1,4 +1,4 @@
-import { CalendarClient, hasGroupAttendee, todayRange } from "./calendar.js"
+import { CalendarClient, dateRange, todayRange } from "./calendar.js"
 import { Config } from "./config.js"
 import { parseNotification } from "./notification.js"
 import { formatEvent, findChannelId, postMessage } from "./slack.js"
@@ -10,11 +10,26 @@ export async function notifyToday(
   slack: WebClient,
 ): Promise<number> {
   const events = await calendar.listEvents(todayRange(config.TIME_ZONE))
+  return notifyEvents(config, slack, events)
+}
+
+export async function notifyOnDate(
+  config: Config,
+  calendar: CalendarClient,
+  slack: WebClient,
+  date: string,
+): Promise<number> {
+  const events = await calendar.listEvents(dateRange(config.TIME_ZONE, date))
+  return notifyEvents(config, slack, events)
+}
+
+async function notifyEvents(
+  config: Config,
+  slack: WebClient,
+  events: Awaited<ReturnType<CalendarClient["listEvents"]>>,
+): Promise<number> {
   let sent = 0
   for (const event of events) {
-    if (!hasGroupAttendee(event, config.GOOGLE_GROUP_EMAIL)) {
-      continue
-    }
     const notification = parseNotification(event.description)
     if (notification == null) {
       continue

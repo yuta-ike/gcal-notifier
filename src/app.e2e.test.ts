@@ -8,7 +8,6 @@ import { Config } from "./config.js"
 const config: Config = {
   GOOGLE_ACCESS_TOKEN: "test-access-token",
   GOOGLE_CALENDAR_ID: "primary",
-  GOOGLE_GROUP_EMAIL: "team@example.com",
   SLACK_BOT_TOKEN: "xoxb-test-token",
   PORT: 8080,
   TIME_ZONE: "Asia/Tokyo",
@@ -62,10 +61,11 @@ test("POST /notify sends matching calendar events to Slack", async () => {
       htmlLink: "https://calendar.google.com/event/matching",
     },
     {
-      id: "not-for-team",
-      summary: "Private event",
+      id: "other-attendee",
+      summary: "External team event",
       description: "notify#general",
       attendees: [{ email: "other@example.com" }],
+      start: { dateTime: "2026-11-12T03:00:00Z" },
     },
     {
       id: "not-marked",
@@ -83,11 +83,15 @@ test("POST /notify sends matching calendar events to Slack", async () => {
   })
 
   assert.equal(response.status, 200)
-  assert.deepEqual(await response.json(), { ok: true, sent: 1 })
+  assert.deepEqual(await response.json(), { ok: true, sent: 2 })
   assert.deepEqual(fakeSlack.messages, [
     {
       channel: "C_ENGINEERING",
       text: "@alice @Bob\nSprint planning は 2026/11/12 10:00 開始です。",
+    },
+    {
+      channel: "C_GENERAL",
+      text: "External team event は 2026/11/12 12:00 開始です。",
     },
   ])
 })
@@ -99,6 +103,18 @@ test("POST /notify validates the JSON request with Zod", async () => {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: "[]",
+  })
+
+  assert.equal(response.status, 400)
+})
+
+test("POST /notify validates the requested calendar date", async () => {
+  const app = createApp(config, new FakeCalendar([]), createFakeSlack().slack)
+
+  const response = await app.request("/notify", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ date: "2026-02-30" }),
   })
 
   assert.equal(response.status, 400)

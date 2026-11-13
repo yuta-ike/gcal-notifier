@@ -3,7 +3,6 @@ import { z } from "zod"
 const environmentSchema = z.object({
   GOOGLE_ACCESS_TOKEN: z.string().min(1),
   GOOGLE_CALENDAR_ID: z.string().min(1).default("primary"),
-  GOOGLE_GROUP_EMAIL: z.string().email(),
   SLACK_BOT_TOKEN: z.string().startsWith("xoxb-"),
   PORT: z.coerce.number().int().positive().default(8080),
   TIME_ZONE: z.string().min(1).default("Asia/Tokyo"),
