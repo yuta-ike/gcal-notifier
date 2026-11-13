@@ -1,4 +1,5 @@
-import { auth, calendar, calendar_v3 } from "@googleapis/calendar"
+import { calendar, calendar_v3 } from "@googleapis/calendar"
+import { GoogleAuth } from "google-auth-library"
 import { addDays, isValid, parseISO, startOfDay } from "date-fns"
 import { fromZonedTime, toZonedTime } from "date-fns-tz"
 
@@ -11,12 +12,10 @@ export interface CalendarClient {
   }): Promise<CalendarEvent[]>
 }
 
-export function createCalendarClient(
-  accessToken: string,
-  calendarId: string,
-): CalendarClient {
-  const credentials = new auth.OAuth2()
-  credentials.setCredentials({ access_token: accessToken })
+export function createCalendarClient(calendarId: string): CalendarClient {
+  const credentials = new GoogleAuth({
+    scopes: ["https://www.googleapis.com/auth/calendar.readonly"],
+  })
   const client = calendar({ version: "v3", auth: credentials })
   return {
     async listEvents(options) {

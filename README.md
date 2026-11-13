@@ -30,11 +30,12 @@ GitHub Releaseを公開すると、GitHub ActionsがDockerイメージをGitHub 
 
 `.env.example`を参考に、次の環境変数を設定する。
 
-- `GOOGLE_ACCESS_TOKEN`: Google Calendar APIのアクセストークン
 - `GOOGLE_CALENDAR_ID`: 取得対象のカレンダーID（既定値は`primary`）
 - `SLACK_BOT_TOKEN`: Slack Bot Token（`channels:read`、`groups:read`、`chat:write`が必要）
 - `PORT`: HTTPポート（既定値は`8080`）
 - `TIME_ZONE`: 「今日」の判定に使うIANAタイムゾーン（既定値は`Asia/Tokyo`）
+
+Google Calendar APIの認証にはADC（Application Default Credentials）を使用する。Cloud Runでは、実行サービスアカウントを対象カレンダーに共有する。ローカルでは`gcloud auth application-default login`でADCを設定する。
 
 Cloud Schedulerなどから毎日10時に、空のJSONオブジェクト（`{}`）を本文として`POST /notify`を呼び出す。特定の日付を指定する場合は、`date`に`YYYY-MM-DD`形式の日付を指定する。`GET /health`はヘルスチェック用である。
 

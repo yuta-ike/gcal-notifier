@@ -6,7 +6,6 @@ import { CalendarEvent, CalendarClient } from "./calendar.js"
 import { Config } from "./config.js"
 
 const config: Config = {
-  GOOGLE_ACCESS_TOKEN: "test-access-token",
   GOOGLE_CALENDAR_ID: "primary",
   SLACK_BOT_TOKEN: "xoxb-test-token",
   PORT: 8080,
