@@ -1,3 +1,8 @@
+allowBuilds:
+  esbuild: true
+
+blockExoticSubs: true
+
 catalog:
   "@hono/node-server": "2.1.7"
   "@hono/zod-validator": "0.9.1"
@@ -13,6 +18,17 @@ catalog:
   tsx: "4.19.4"
   typescript: "5.8.3"
   zod: "3.25.28"
-minimumReleaseAgeExclude:
-  - "@hono/node-server@2.1.7"
-  - hono@4.13.18
+
+catalogMode: strict
+
+catalogPrune: true
+
+ignoreScripts: true
+
+minimumReleaseAgeExcludePrune: true
+
+trustPolicy: no-downgrade
+
+trustPolicyIgnoreAfter: 525600 # 1 year
+
+updateNotifier: false
