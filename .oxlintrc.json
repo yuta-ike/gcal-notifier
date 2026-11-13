@@ -1,7 +1,5 @@
 {
-  "options": {
-    "typeAware": false
-  },
+  "$schema": "https://oxc.rs/schemas/oxlint-config.json",
   "rules": {
     "curly": "error"
   }

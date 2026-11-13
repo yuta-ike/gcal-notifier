@@ -1,35 +1,39 @@
-import { serveStatic } from "@hono/node-server/serve-static"
+import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
-import { authMiddleware } from "./middleware/auth.js"
 import { logger } from "hono/logger"
 import { secureHeaders } from "hono/secure-headers"
-import { healthApp } from "./routes/health.js"
-import { webApp } from "./routes/web.js"
-import { authApp } from "./routes/auth.js"
-import { cronApp } from "./routes/cron.js"
-import { apiApp } from "./routes/api.js"
+import { z } from "zod"
+import { CalendarClient } from "./calendar.js"
+import { Config } from "./config.js"
+import { notifyToday } from "./service.js"
+import type { WebClient } from "@slack/web-api"
 
-export const app = new Hono()
-  // Security headers
-  .use(secureHeaders())
-  // Logger
-  .use(logger())
-  // Asset
-  .use("/assets/*", serveStatic({ root: "./public" }))
-  // Health
-  .route("/", healthApp)
-  // Auth middleware
-  .use("*", authMiddleware)
-  // Web
-  .route("/", webApp)
-  // Auth
-  .route("/", authApp)
-  // API
-  .route("/", apiApp)
-  // Cron
-  .route("/api/cron", cronApp)
-  // Error
-  .onError((error, c) => {
-    console.error(error instanceof Error ? error.message : error)
-    return c.json({ error: "内部エラーが発生しました" }, 500)
-  })
+const notifyRequestSchema = z.object({}).passthrough()
+
+export function createApp(
+  config: Config,
+  calendar: CalendarClient,
+  slack: WebClient,
+) {
+  const app = new Hono()
+
+  app.use("*", logger())
+  app.use("*", secureHeaders())
+
+  app.get("/health", (context) => context.json({ ok: true }))
+  app.post(
+    "/notify",
+    zValidator("json", notifyRequestSchema),
+    async (context) => {
+      try {
+        const sent = await notifyToday(config, calendar, slack)
+        return context.json({ ok: true, sent })
+      } catch (error) {
+        console.error("Notification failed", error)
+        return context.json({ ok: false, error: "notification_failed" }, 500)
+      }
+    },
+  )
+
+  return app
+}

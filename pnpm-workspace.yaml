@@ -1,27 +1,18 @@
 catalog:
-  "@hono/node-server": ^1.19.2
-  "@hono/zod-validator": ^0.9.1
-  "@types/node": ^26.5.1
-  "@types/sanitize-html": ^2.16.1
-  hono: ^4.9.7
-  knip: ^6.34.0
-  mongodb: ^6.20.0
-  oxfmt: ^0.66.0
-  oxlint: 1.81.0
-  oxlint-tsgolint: 7.0.2001
-  sanitize-html: ^2.17.7
-  tsx: ^4.20.5
-  typescript: 7.0.2
-  zod: ^4.5.4
-
-catalogMode: strict
-
-catalogPrune: true
-
-ignoreScripts: true
-
-minimumReleaseAge: 10080
-
-trustLockfile: true
-
-trustPolicy: no-downgrade
+  "@hono/node-server": "2.1.7"
+  "@hono/zod-validator": "0.9.1"
+  "@googleapis/calendar": "20.1.0"
+  "@slack/web-api": "7.9.3"
+  "@types/node": "22.15.21"
+  date-fns: "4.1.0"
+  date-fns-tz: "3.2.0"
+  hono: "4.13.18"
+  knip: "5.50.0"
+  oxfmt: "0.11.0"
+  oxlint: "0.16.9"
+  tsx: "4.19.4"
+  typescript: "5.8.3"
+  zod: "3.25.28"
+minimumReleaseAgeExclude:
+  - "@hono/node-server@2.1.7"
+  - hono@4.13.18
