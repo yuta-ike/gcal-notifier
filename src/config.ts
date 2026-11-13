@@ -1,7 +1,6 @@
 import { z } from "zod"
 
 const environmentSchema = z.object({
-  GOOGLE_ACCESS_TOKEN: z.string().min(1),
   GOOGLE_CALENDAR_ID: z.string().min(1).default("primary"),
   SLACK_BOT_TOKEN: z.string().startsWith("xoxb-"),
   PORT: z.coerce.number().int().positive().default(8080),

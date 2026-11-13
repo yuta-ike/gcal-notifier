@@ -5,10 +5,7 @@ import { createCalendarClient } from "./calendar.js"
 import { loadConfig } from "./config.js"
 
 const config = loadConfig()
-const calendar = createCalendarClient(
-  config.GOOGLE_ACCESS_TOKEN,
-  config.GOOGLE_CALENDAR_ID,
-)
+const calendar = createCalendarClient(config.GOOGLE_CALENDAR_ID)
 const slack = new WebClient(config.SLACK_BOT_TOKEN)
 const app = createApp(config, calendar, slack)
 

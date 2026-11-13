@@ -27,6 +27,9 @@ catalogs:
     date-fns-tz:
       specifier: 3.2.0
       version: 3.2.0
+    google-auth-library:
+      specifier: 11.3.4
+      version: 11.3.4
     hono:
       specifier: 4.13.18
       version: 4.13.18
@@ -71,6 +74,9 @@ importers:
       date-fns-tz:
         specifier: 'catalog:'
         version: 3.2.0(date-fns@4.1.0)
+      google-auth-library:
+        specifier: 'catalog:'
+        version: 11.3.4
       hono:
         specifier: 'catalog:'
         version: 4.13.18

@@ -20,6 +20,7 @@
     "@hono/node-server": "catalog:",
     "@hono/zod-validator": "catalog:",
     "@googleapis/calendar": "catalog:",
+    "google-auth-library": "catalog:",
     "@slack/web-api": "catalog:",
     "date-fns": "catalog:",
     "date-fns-tz": "catalog:",
