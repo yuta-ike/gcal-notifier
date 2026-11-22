@@ -1,4 +1,9 @@
-import { CalendarClient, dateRange, todayRange } from "./calendar.js"
+import {
+  CalendarClient,
+  dateRange,
+  todayRange,
+  type CalendarEvent,
+} from "./calendar.js"
 import { Config } from "./config.js"
 import { parseNotification } from "./notification.js"
 import { formatEvent, findChannelId, postMessage } from "./slack.js"
@@ -65,13 +70,17 @@ async function notifyForRange(
 async function notifyEvents(
   config: Config,
   slack: WebClient,
-  events: Awaited<ReturnType<CalendarClient["listEvents"]>>,
+  events: CalendarEvent[],
 ): Promise<number> {
   let sent = 0
   for (const [index, event] of events.entries()) {
     const eventId = event.id ?? `unknown-${index + 1}`
     const summary = event.summary?.trim() || "(untitled)"
-    console.info("Calendar event evaluating", { eventId, summary })
+    console.info("Calendar event evaluating", {
+      eventId,
+      summary,
+      description: event.description ?? "",
+    })
 
     const notification = parseNotification(event.description)
     if (notification == null) {
